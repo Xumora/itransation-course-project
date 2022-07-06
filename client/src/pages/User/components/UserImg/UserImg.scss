@@ -1,0 +1,21 @@
+.userImg{
+    &-box{
+        position: relative;
+        .bg{
+            height: 250px;
+            object-fit: cover;
+        }
+        .avatar{
+            width: 162px;
+            height: 160px;
+            object-fit: cover;
+            border: 5px solid white;
+            position: absolute;
+            bottom: -80px;
+            left: calc(50% - 81px);
+        }
+    }
+    &-name{
+        margin-top: 90px !important;
+    }
+}

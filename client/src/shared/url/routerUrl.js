@@ -1,0 +1,7 @@
+export const LOGIN_URL = '/'
+export const REGISTRATION_URL = '/registration'
+export const MAIN_URL = '/main'
+export const USER_URL = '/user'
+export const COLLECTION_URL = '/collection'
+export const ADMIN_URL = '/admin'
+export const VERIFY_EMAIL_URL = '/verify'

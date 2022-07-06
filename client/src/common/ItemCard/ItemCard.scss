@@ -1,0 +1,40 @@
+.itemCard{
+    border-radius: 6px;
+    &-main{
+        height: 180px;
+        img{
+            object-fit: cover;
+            height: 180px;
+            width: 240px;
+        }
+        &-content{
+            flex: 1;
+            &-info{
+                max-height: 110px;
+                overflow-y: auto;
+                &::-webkit-scrollbar {
+                    width: 6px;
+                }
+                &::-webkit-scrollbar-track {
+                    background: #EBEBEB;
+                    border-radius: 3px;
+                }
+                &::-webkit-scrollbar-thumb {
+                    background: silver;
+                    border-radius: 3px;
+                }
+                a{
+                    word-break: break-all;
+                }
+            }
+        }
+    }
+    &-bottom{
+        &-btnBox{
+            .actionBtn{
+                min-width: 35px !important;
+                height: 35px !important;
+            }
+        }
+    }
+}

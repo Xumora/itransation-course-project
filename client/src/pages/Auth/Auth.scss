@@ -1,0 +1,14 @@
+.authPage{
+    min-width: 100vw;
+    min-height: 100vh;
+    background-image: url('https://res.cloudinary.com/xumora/image/upload/v1655993407/test/qtp1kx4j9tgnvcr7ehlr.jpg');
+    background-size: cover;
+    &-right{
+        width: 400px;
+        transform: translateX(0);
+        transition: all ease 0.5s;
+        &.hide{
+            transform: translateX(-400px);
+        }
+    }
+}

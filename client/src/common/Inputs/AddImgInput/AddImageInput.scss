@@ -1,0 +1,7 @@
+.dropzone{
+    cursor: pointer;
+    border: 3px dashed silver;
+    &.loading{
+        cursor: not-allowed;
+    }
+}

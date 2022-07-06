@@ -1,0 +1,31 @@
+.userPage{
+    &-main{
+        &-left{
+            width: 350px;
+            height: calc(100vh - 72px);
+            &-tags{
+                overflow-y: auto;
+                flex: 1;
+                &::-webkit-scrollbar {
+                    width: 6px;
+                }
+                &::-webkit-scrollbar-track {
+                    background: #EBEBEB;
+                    border-radius: 5px 15px 15px 5px;
+                }
+                &::-webkit-scrollbar-thumb {
+                    background: silver;
+                    border-radius: 3px;
+                }
+            }
+        }
+        &-right{
+            width: calc(100vw - 350px);
+            height: calc(100vh - 72px);
+            overflow-y: auto;
+            &::-webkit-scrollbar{
+                display: none;
+            }
+        }
+    }
+}

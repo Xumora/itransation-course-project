@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Ruda:wght@400;500;600;700;800;900&display=swap');
+
+* {
+    box-sizing: border-box !important;
+  }
+  
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+    &::-webkit-scrollbar{
+      display: none;
+    }
+    .app{
+      &.night{
+        color: white !important;
+        .bg-white{
+          background-color: #212529 !important;
+        }
+        .bg-light{
+          background-color: black !important;
+        }
+      }
+    }
+  }
+  
+h1,h2,h3,h4,h5,h6,
+p {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: 'Ruda', sans-serif !important;
+  }
+
+button, input, label, textarea, a, small, span{
+    font-family: 'Ruda', sans-serif !important;
+    }
+
+button:disabled{
+    cursor: not-allowed !important;
+    pointer-events: all !important;
+  }
+
+a{
+  text-decoration: none;
+}
+
+input, textarea{
+  outline: none;
+}
+
+.MuiOutlinedInput-notchedOutline{
+  border-color: silver !important;
+}
+
+.MuiInputLabel-root {
+  color: silver !important;
+}
+
+.text-silver{
+  color: silver !important;
+}
+
+.MuiOutlinedInput-root{
+  .MuiSvgIcon-root{
+    color: silver !important;
+  }
+}
+
+.MuiTextField-root{
+  textarea{
+    &::-webkit-scrollbar{
+      display: none !important;
+    }
+  }
+}
+
+.react-datepicker-popper{
+  z-index: 9;
+}
+
+.react-datepicker__input-container{
+  input{
+    width: 100%;
+    height: 50px;
+    border: 1px solid silver;
+    border-radius: 4px;
+    outline: none;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}
+
+.page{
+  min-width: 100vw;
+  min-height: 100vh;
+  &-main{
+    height: calc(100vh - 72px);
+    overflow: auto;
+    &::-webkit-scrollbar{
+      display: none;
+    }
+  }
+}
+
+.rounded{
+  border-radius: 6px !important;
+}
+

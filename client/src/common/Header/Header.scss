@@ -1,0 +1,16 @@
+.header{
+    &-btnBox{
+        .profileBtn{
+            img{
+                width: 45px;
+                height: 45px;
+                object-fit: cover;
+            }
+        }
+        .fabBtn{
+            width: 45px;
+            height: 45px;
+            z-index: 1;
+        }
+    }
+}

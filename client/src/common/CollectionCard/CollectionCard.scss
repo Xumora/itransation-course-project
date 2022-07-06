@@ -1,0 +1,44 @@
+.collectionCard{
+    border-radius: 6px;
+    &-top{
+        .ava{
+            width: 45px;
+            height: 45px;
+            object-fit: cover;
+        }
+    }
+    &-main{
+        height: 240px;
+        &-img{
+            object-fit: cover;
+            height: 240px;
+            width: 320px;
+        }
+        &-content{
+            flex: 1;
+            .description{
+                max-height: 150px;
+                overflow-y: auto;
+                &::-webkit-scrollbar {
+                    width: 6px;
+                }
+                &::-webkit-scrollbar-track {
+                    background: #EBEBEB;
+                    border-radius: 3px;
+                }
+                &::-webkit-scrollbar-thumb {
+                    background: silver;
+                    border-radius: 3px;
+                }
+            }
+        }
+    }
+    &-bottom{
+        &-btnBox{
+            .actionBtn{
+                min-width: 35px !important;
+                height: 35px !important;
+            }
+        }
+    }
+}

@@ -5,7 +5,7 @@ const mongoose = require('mongoose')
 const path = require('path')
 const cookieParser = require('cookie-parser')
 const fileUpload = require('express-fileupload')
-const { notFound, errorHandler } = require('./middlewares/errorMiddleware')
+const { errorHandler } = require('./middlewares/errorMiddleware')
 
 const authRoutes = require('./routes/authRoutes')
 const userRoutes = require('./routes/userRoutes')
@@ -30,7 +30,6 @@ app.use('/api/collection', collectionRoutes)
 app.use('/api/item', itemRoutes)
 app.use('/api/comment', commentRoutes)
 
-app.use(notFound)
 app.use(errorHandler)
 
 const __dirname1 = path.resolve()
@@ -44,10 +43,9 @@ if (process.env.NODE_ENV === 'production') {
 
 const PORT = process.env.PORT || 5000
 const server = require('http').createServer(app)
-
 async function start() {
     try {
-        await mongoose.connect(process.env.MONGO_URI, {
+        mongoose.connect(process.env.MONGO_URI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         })

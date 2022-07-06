@@ -43,7 +43,7 @@ function App() {
     if (!token) {
       navigate('/')
     }
-  }, [token])
+  }, [token, navigate])
 
   let routes = useRoutes([
     {

@@ -25,6 +25,7 @@ export const loginUserApi = async (userInfo) => {
         })
         return { success: true, data: res.data }
     } catch (error) {
+        console.log(error);
         return { success: false, message: error.response.data }
     }
 }

@@ -1,8 +1,29 @@
 .userPage{
     &-main{
+        @media only screen and (max-width: 767px) {
+            position: relative;
+        }
         &-left{
             width: 350px;
             height: calc(100vh - 72px);
+            @media only screen and (max-width: 767px) {
+                width: 100%;
+                position: absolute;
+                transform: translateX(-100%);
+                transition: all ease 0.5s;
+                z-index: 4;
+                &.show{
+                    transform: translateX(0);
+                }
+            }
+            .closeBtn{
+                @media only screen and (min-width: 768px) {
+                    display: none;
+                }
+            }
+            &-bio{
+                min-height: 192px;
+            }
             &-tags{
                 overflow-y: auto;
                 flex: 1;
@@ -14,7 +35,7 @@
                     border-radius: 5px 15px 15px 5px;
                 }
                 &::-webkit-scrollbar-thumb {
-                    background: silver;
+                    background: #6c757d;
                     border-radius: 3px;
                 }
             }
@@ -22,9 +43,17 @@
         &-right{
             width: calc(100vw - 350px);
             height: calc(100vh - 72px);
+            @media only screen and (max-width: 767px) {
+                width: 100%;
+            }
             overflow-y: auto;
             &::-webkit-scrollbar{
                 display: none;
+            }
+            .infoBtn{
+                @media only screen and (min-width: 768px) {
+                    display: none;
+                }
             }
         }
     }

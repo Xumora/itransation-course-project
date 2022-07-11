@@ -1,0 +1,24 @@
+.usersTable{
+    min-height: calc(100vh - 104px);
+    .userTable-toolbar{
+        @media only screen and (max-width: 767px) {
+            justify-content: space-between;
+            align-items: center;
+           button{
+            padding: 8px;
+           }
+        }
+        @media only screen and (max-width: 575px) {
+           flex-wrap: wrap;
+           .adminBtn{
+            width: 100%;
+            margin: 8px 0 !important;
+           }
+        }
+    }
+    .ava{
+        width: 45px;
+        height: 45px;
+        object-fit: cover;
+    }
+}

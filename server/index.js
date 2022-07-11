@@ -3,7 +3,6 @@ const dotenv = require('dotenv')
 const cors = require('cors')
 const mongoose = require('mongoose')
 const path = require('path')
-const cookieParser = require('cookie-parser')
 const fileUpload = require('express-fileupload')
 const { errorHandler } = require('./middlewares/errorMiddleware')
 
@@ -13,12 +12,12 @@ const imageRoutes = require('./routes/imageRoutes')
 const collectionRoutes = require('./routes/collectionRoutes')
 const itemRoutes = require('./routes/itemRoutes')
 const commentRoutes = require('./routes/commentRoutes')
+const tagRoutes = require('./routes/tagRoutes')
 
 dotenv.config()
 const app = express()
 app.use(cors())
 app.use(express.json({ extended: true }))
-app.use(cookieParser())
 app.use(fileUpload({
     useTempFiles: true
 }))
@@ -29,6 +28,7 @@ app.use('/api/image', imageRoutes)
 app.use('/api/collection', collectionRoutes)
 app.use('/api/item', itemRoutes)
 app.use('/api/comment', commentRoutes)
+app.use('/api/tag', tagRoutes)
 
 app.use(errorHandler)
 
@@ -59,6 +59,7 @@ async function start() {
 }
 
 start()
+
 
 
 

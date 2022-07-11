@@ -1,19 +1,25 @@
 import React, { useState } from 'react'
 import { useSnackbar } from 'notistack'
-import { useEditProfileShow } from '../../../contexts/UIContext'
+import { useEditProfileShow, useLang } from '../../../contexts/UIContext'
 import { Typography, Button } from '@mui/material'
 import { Close, AddPhotoAlternateOutlined } from '@mui/icons-material'
 import { deleteCloudImgApi, editProfileApi } from '../../../shared/api/api'
+import { validateEmail } from '../../../shared/functions/functions'
 
 import AddImgInput from '../../Inputs/AddImgInput/AddImgInput'
 import TextInput from '../../Inputs/TextInput/TextInput'
 import PasswordInput from '../../Inputs/PasswordInput/PasswordInput'
 import TextareaInput from '../../Inputs/TextareaInput/TextareaInput'
+import { LOGIN_URL } from '../../../shared/url/routerUrl'
+import { useNavigate } from 'react-router-dom'
+import { useAdmin, useMainPageSearch } from '../../../contexts/DataContext'
 
 import '../Modal.scss'
 
 const EditProfile = ({ userData = null, setUserData = null }) => {
     const { enqueueSnackbar } = useSnackbar()
+    const [lang] = useLang()
+    const navigate = useNavigate()
     const [setEditProfileShow] = useEditProfileShow(true)
     const [avaImg, setAvaImg] = useState(userData?.img)
     const [bgImg, setBgImg] = useState(userData?.bgImg)
@@ -25,6 +31,8 @@ const EditProfile = ({ userData = null, setUserData = null }) => {
     const [bio, setBio] = useState(userData?.bio)
     const [website, setWebsite] = useState(userData?.website)
     const [loading, setLoading] = useState(false)
+    const [setAdmin] = useAdmin(true)
+    const [setMainPageSearch] = useMainPageSearch(true)
 
     const removeImgFromCloud = async (img, setImg) => {
         if (img.public_id !== null) {
@@ -49,22 +57,37 @@ const EditProfile = ({ userData = null, setUserData = null }) => {
 
     const editProfile = async () => {
         if (!avaImg || !bgImg) {
-            enqueueSnackbar('Please select the image', { variant: 'error' })
+            enqueueSnackbar(lang.snackbars.selectImage, { variant: 'error' })
             return
         }
         if (password !== '' && password.length < 8) {
-            enqueueSnackbar('The password must contain at least 8 characters', { variant: 'error' })
+            enqueueSnackbar(lang.snackbars.passwordLength, { variant: 'error' })
+            return
+        }
+        if (!validateEmail(email)) {
+            enqueueSnackbar(lang.snackbars.emailCorrectly, { variant: 'error' })
             return
         }
         setLoading(true)
         const res = await editProfileApi(username, email, password, bio, website, avaImg, bgImg)
         if (res.success) {
+            delete res.data.user.isActivated
             setUserData(res.data.user)
             setPassword('')
             setLoading(false)
-            enqueueSnackbar('Account is updated', { variant: 'success' })
+            localStorage.setItem('token', JSON.stringify(res.data.token))
+            localStorage.setItem('userInfo', JSON.stringify({ id: userData._id, img: res.data.user.img.url }))
+            enqueueSnackbar(lang.snackbars.accountUpdated, { variant: 'success' })
         } else {
-            enqueueSnackbar('Something went wrong, please try again', { variant: 'error' })
+            if (res.message === 'Token is not valid') {
+                setAdmin(false)
+                setMainPageSearch('')
+                localStorage.removeItem('token')
+                localStorage.removeItem('userInfo')
+                navigate(LOGIN_URL)
+            } else {
+                enqueueSnackbar(lang.snackbars.smthWentWrong, { variant: 'error' })
+            }
             setLoading(false)
         }
     }

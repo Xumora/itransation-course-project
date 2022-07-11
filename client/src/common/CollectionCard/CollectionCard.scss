@@ -1,23 +1,33 @@
 .collectionCard{
     border-radius: 6px;
-    &-top{
-        .ava{
-            width: 45px;
-            height: 45px;
-            object-fit: cover;
-        }
+    .ava{
+        width: 45px;
+        height: 45px;
+        object-fit: cover;
     }
     &-main{
-        height: 240px;
+        height: 180px;
+        @media only screen and (max-width: 575px) {
+            flex-wrap: wrap;
+            height: auto;
+        }
         &-img{
             object-fit: cover;
-            height: 240px;
-            width: 320px;
+            height: 180px;
+            width: 240px;
+            @media only screen and (max-width: 575px) {
+                width: 100%;
+                height: calc(((100vw - 48px)/4)*3);
+            }
         }
         &-content{
             flex: 1;
+            @media only screen and (max-width: 575px) {
+                flex: 0;
+                width: 100%;
+            }
             .description{
-                max-height: 150px;
+                max-height: 110px;
                 overflow-y: auto;
                 &::-webkit-scrollbar {
                     width: 6px;
@@ -27,7 +37,7 @@
                     border-radius: 3px;
                 }
                 &::-webkit-scrollbar-thumb {
-                    background: silver;
+                    background: #6c757d;
                     border-radius: 3px;
                 }
             }

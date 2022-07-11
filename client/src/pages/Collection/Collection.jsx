@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getCollectionInfoApi } from '../../shared/api/api'
 import { useAddItemShow } from '../../contexts/UIContext'
+import { useAdmin } from '../../contexts/DataContext'
 
 import Header from '../../common/Header/Header'
 import AddItem from '../../common/Modals/AddItem/AddItem'
 import RenderItems from '../../common/RenderItems/RenderItems'
+import CollectionInfo from './components/CollectionInfo/CollectionInfo'
 
 const Collection = () => {
     const userInfo = JSON.parse(localStorage.getItem('userInfo'))
@@ -13,6 +15,7 @@ const Collection = () => {
     const [addItemShow] = useAddItemShow()
     const [collectionData, setCollectionData] = useState(null)
     const [items, setItems] = useState([])
+    const [admin] = useAdmin()
 
     useEffect(() => {
         const getCollectionInfo = async () => {
@@ -29,13 +32,14 @@ const Collection = () => {
     return (
         <div className='page'>
             {
-                addItemShow && <AddItem itemFields={collectionData?.itemFields} collectionId={collectionData?._id} />
+                addItemShow && <AddItem itemFields={collectionData?.itemFields} setItems={setItems} />
             }
             {
-                collectionData?.user?._id === userInfo.id ? <Header type='owner' /> : <Header />
+                collectionData?.user?._id === userInfo.id || admin ? <Header type='owner' /> : <Header />
             }
             <div className='page-main bg-light'>
-                <RenderItems items={items} type='collectionInner' />
+                <CollectionInfo user={collectionData?.user} name={collectionData?.name} itemsCount={collectionData?.itemsCount} />
+                <RenderItems items={items} type='collectionInner' isOwner={userInfo.id === collectionData?.user?._id ? true : false} setItems={setItems} />
             </div>
         </div>
     )

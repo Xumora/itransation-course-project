@@ -1,14 +1,16 @@
 import React, { createContext, useContext, useState } from 'react'
+import en from '../shared/language/en'
+import ru from '../shared/language/ru'
 const Context = createContext()
 
 
 const UIContext = ({ children }) => {
+    const language = localStorage.getItem('language')
     const [createCollectionShow, setCreateCollectionShow] = useState(false)
     const [addItemShow, setAddItemShow] = useState(false)
     const [editProfileShow, setEditProfileShow] = useState(false)
-    const [followersShow, setFollowersShow] = useState(false)
-    const [followingsShow, setFollowingsShow] = useState(false)
     const [theme, setTheme] = useState(localStorage.getItem('theme') ? localStorage.getItem('theme') : 'day')
+    const [lang, setLang] = useState(language === 'en' ? en : language === 'ru' ? ru : !language ? en : '')
 
     const value = {
         createCollectionShow,
@@ -17,12 +19,10 @@ const UIContext = ({ children }) => {
         setAddItemShow,
         editProfileShow,
         setEditProfileShow,
-        followersShow,
-        setFollowersShow,
-        followingsShow,
-        setFollowingsShow,
         theme,
-        setTheme
+        setTheme,
+        lang,
+        setLang
     }
 
     return (
@@ -51,19 +51,14 @@ const useEditProfileShow = (setterOnly) => {
     return setterOnly ? [setEditProfileShow] : [editProfileShow, setEditProfileShow]
 }
 
-const useFollowersShow = (setterOnly) => {
-    const { followersShow, setFollowersShow } = useContext(Context)
-    return setterOnly ? [setFollowersShow] : [followersShow, setFollowersShow]
-}
-
-const useFollowingsShow = (setterOnly) => {
-    const { followingsShow, setFollowingsShow } = useContext(Context)
-    return setterOnly ? [setFollowingsShow] : [followingsShow, setFollowingsShow]
-}
-
 const useTheme = (setterOnly) => {
     const { theme, setTheme } = useContext(Context)
     return setterOnly ? [setTheme] : [theme, setTheme]
+}
+
+const useLang = (setterOnly) => {
+    const { lang, setLang } = useContext(Context)
+    return setterOnly ? [setLang] : [lang, setLang]
 }
 
 
@@ -72,7 +67,6 @@ export {
     useCreateCollectionShow,
     useAddItemShow,
     useEditProfileShow,
-    useFollowersShow,
-    useFollowingsShow,
-    useTheme
+    useTheme,
+    useLang
 }

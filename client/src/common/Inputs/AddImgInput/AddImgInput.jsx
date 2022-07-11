@@ -4,14 +4,13 @@ import { useDropzone } from 'react-dropzone'
 import { Typography } from '@mui/material'
 import { AddPhotoAlternateOutlined } from '@mui/icons-material'
 import { uploadCloudImgApi } from '../../../shared/api/api'
+import { useLang } from '../../../contexts/UIContext'
 
 import './AddImageInput.scss'
 
-
-
-
 const AddImgInput = ({ setImage = null, loading = false, setLoading = null }) => {
     const { enqueueSnackbar } = useSnackbar()
+    const [lang] = useLang()
     const { getRootProps, getInputProps } = useDropzone({
         accept: { 'image/*': ['.jpeg', '.jpg', '.png'] },
         onDrop: async (acceptedFiles) => {
@@ -21,7 +20,7 @@ const AddImgInput = ({ setImage = null, loading = false, setLoading = null }) =>
             data.append('file', img)
             const res = await uploadCloudImgApi(data)
             if (!res.success) {
-                enqueueSnackbar('Something went wrong, please try again', { variant: 'error' })
+                enqueueSnackbar(lang.snackbars.smthWentWrong, { variant: 'error' })
                 setLoading(false)
             } else {
                 setImage(res.data)
@@ -45,7 +44,7 @@ const AddImgInput = ({ setImage = null, loading = false, setLoading = null }) =>
                 <div className='h-100 d-flex align-items-center justify-content-center text-silver'>
                     <div className='dropzone-content text-center'>
                         <AddPhotoAlternateOutlined className='fs-1 mb-2' />
-                        <Typography variant='subtitle1' component='p'>Drag’n’drop 4x3(album variant) image here, or click to select image</Typography>
+                        <Typography variant='subtitle1' component='p'>{lang.common.dropImage}</Typography>
                     </div>
                 </div>
             </div>

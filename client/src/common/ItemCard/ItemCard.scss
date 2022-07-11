@@ -1,14 +1,31 @@
 .itemCard{
     border-radius: 6px;
+    .ava{
+        width: 45px;
+        height: 45px;
+        object-fit: cover;
+    }
     &-main{
         height: 180px;
+        @media only screen and (max-width: 576px) {
+            flex-wrap: wrap;
+            height: auto;
+        }
         img{
             object-fit: cover;
             height: 180px;
             width: 240px;
+            @media only screen and (max-width: 576px) {
+                width: 100%;
+                height: calc(((100vw - 48px)/4)*3);
+            }
         }
         &-content{
             flex: 1;
+            @media only screen and (max-width: 576px) {
+                flex: 0;
+                width: 100%;
+            }
             &-info{
                 max-height: 110px;
                 overflow-y: auto;
@@ -20,7 +37,7 @@
                     border-radius: 3px;
                 }
                 &::-webkit-scrollbar-thumb {
-                    background: silver;
+                    background: #6c757d;
                     border-radius: 3px;
                 }
                 a{

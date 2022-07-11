@@ -1,15 +1,25 @@
 import React, { useState, useEffect } from 'react'
+import { useSnackbar } from 'notistack'
 import { Typography, Button, TextField } from '@mui/material'
 import { Close, Send } from '@mui/icons-material'
 import { addCommentApi, getCommentsApi } from '../../../shared/api/api'
+import { useLang } from '../../../contexts/UIContext'
+import { LOGIN_URL } from '../../../shared/url/routerUrl'
+import { useNavigate } from 'react-router-dom'
+import { useAdmin, useMainPageSearch } from '../../../contexts/DataContext'
 
 import RenderComments from './components/RenderComments/RenderComments'
 
 import '../Modal.scss'
 
 const Comments = ({ setCommentsShow = null, name = '', id = null, type = '' }) => {
+    const { enqueueSnackbar } = useSnackbar()
+    const [lang] = useLang()
+    const navigate = useNavigate()
     const [comments, setComments] = useState([])
     const [content, setContent] = useState('')
+    const [setAdmin] = useAdmin(true)
+    const [setMainPageSearch] = useMainPageSearch(true)
 
     useEffect(() => {
         const getComments = async () => {
@@ -22,7 +32,27 @@ const Comments = ({ setCommentsShow = null, name = '', id = null, type = '' }) =
     }, [id, type])
 
     const send = async () => {
-        await addCommentApi(id, content, type)
+        if (content === '') {
+            enqueueSnackbar(lang.snackbars.commentEmpty, { variant: 'error' })
+        }
+        const res = await addCommentApi(id, content, type)
+        if (res.success) {
+            setContent('')
+        } else {
+            if (res.message === 'Token is not valid') {
+                setAdmin(false)
+                setMainPageSearch('')
+                localStorage.removeItem('token')
+                localStorage.removeItem('userInfo')
+                navigate(LOGIN_URL)
+            } else if (res.message === 'Email is not activated') {
+                enqueueSnackbar(lang.snackbars.emailNotActivated, { variant: 'warning' })
+            } else if (res.message === 'User must register') {
+                enqueueSnackbar(lang.snackbars.registerFirst, { variant: 'error' })
+            } else {
+                enqueueSnackbar(lang.snackbars.smthWentWrong, { variant: 'error' })
+            }
+        }
     }
 
     const close = () => {
@@ -40,7 +70,7 @@ const Comments = ({ setCommentsShow = null, name = '', id = null, type = '' }) =
                     <RenderComments comments={comments} />
                 </div>
                 <div className="d-flex border-top">
-                    <TextField fullWidth variant='standard' multiline maxRows={4} InputProps={{ disableUnderline: true }} className='px-3 py-2' placeholder='Add a comment...' value={content} onChange={(e) => setContent(e.target.value)} />
+                    <TextField fullWidth variant='standard' multiline maxRows={4} InputProps={{ disableUnderline: true }} className='px-3 py-2' placeholder={lang.main.addComment} value={content} onChange={(e) => setContent(e.target.value)} />
                     <Button variant='text' onClick={send}><Send /></Button>
                 </div>
             </div>

@@ -15,7 +15,7 @@ root.render(
       vertical: 'top',
       horizontal: 'right',
     }}
-    autoHideDuration={3000}
+    autoHideDuration={2000}
   >
     <React.StrictMode>
       <BrowserRouter>

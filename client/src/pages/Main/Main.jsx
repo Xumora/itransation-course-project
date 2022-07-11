@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { getCollectionsApi, getItemsApi, getUsersApi } from '../../shared/api/api'
+import { getCollectionsApi, getItemsApi, getTagsApi, getUsersApi } from '../../shared/api/api'
 import { useMainPageSearch } from '../../contexts/DataContext'
 
 import Header from '../../common/Header/Header'
 import RenderItems from '../../common/RenderItems/RenderItems'
 import RenderCollections from '../../common/RenderCollections/RenderCollections'
 import MainPageNavbar from './components/MainPageNavbar/MainPageNavbar'
-import RenderUsers from '../../common/RenderUsers/RenderUsers'
+import RenderUsers from './components/RenderUsers/RenderUsers'
+import RenderTags from './components/RenderTags/RenderTags'
 
 const Main = () => {
     const [type, setType] = useState('items')
@@ -15,6 +16,7 @@ const Main = () => {
     const [users, setUsers] = useState([])
     const [collections, setCollections] = useState([])
     const [items, setItems] = useState([])
+    const [tags, setTags] = useState([])
 
     useEffect(() => {
         const getUsers = async () => {
@@ -28,15 +30,21 @@ const Main = () => {
             }
         }
         const getCollections = async () => {
-            const res = await getCollectionsApi(mainPageSearch)
+            const res = await getCollectionsApi(mainPageSearch, selectedFilter)
             if (res.success) {
                 setCollections(res.data)
             }
         }
         const getItems = async () => {
-            const res = await getItemsApi(mainPageSearch)
+            const res = await getItemsApi(mainPageSearch, selectedFilter)
             if (res.success) {
                 setItems(res.data)
+            }
+        }
+        const getTags = async () => {
+            const res = await getTagsApi(mainPageSearch)
+            if (res.success) {
+                setTags(res.data)
             }
         }
 
@@ -46,18 +54,20 @@ const Main = () => {
             getCollections()
         } else if (type === 'items') {
             getItems()
+        } else if (type === 'tags') {
+            getTags()
         }
-    }, [type, mainPageSearch])
+    }, [type, mainPageSearch, selectedFilter])
 
     return (
         <div className='page'>
-            <Header />
-            <div className='page-main bg-light'>
+            <Header type='mainPage' />
+            <div className='page-main main bg-light'>
                 <MainPageNavbar type={type} setType={setType} selectedFilter={selectedFilter} setSelectedFilter={setSelectedFilter} />
                 {
-                    type === 'items' ? <RenderItems items={items} /> :
-                        type === 'collections' ? <RenderCollections collections={collections} /> :
-                            type === 'tabs' ? '' :
+                    type === 'items' ? <RenderItems items={items} isOwner={false} /> :
+                        type === 'collections' ? <RenderCollections type='mainPage' collections={collections} /> :
+                            type === 'tags' ? <RenderTags tags={tags} /> :
                                 type === 'users' ? <RenderUsers users={users} searchText={mainPageSearch} /> : ''
                 }
             </div>

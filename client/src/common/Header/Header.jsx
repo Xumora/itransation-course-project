@@ -1,12 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useSnackbar } from 'notistack'
 import { Button, Fab, Typography } from '@mui/material'
-import { LogoutOutlined, Add, Edit } from '@mui/icons-material'
-import { logoutUserApi } from '../../shared/api/api'
-import { MAIN_URL, USER_URL } from '../../shared/url/routerUrl'
-import { useAddItemShow, useCreateCollectionShow, useEditProfileShow } from '../../contexts/UIContext'
-import { useMainPageSearch } from '../../contexts/DataContext'
+import { LogoutOutlined, Add, Edit, Close, People } from '@mui/icons-material'
+import { LOGIN_URL, MAIN_URL, USER_URL } from '../../shared/url/routerUrl'
+import { useAddItemShow, useCreateCollectionShow, useEditProfileShow, useLang } from '../../contexts/UIContext'
+import { useAdmin, useMainPageSearch } from '../../contexts/DataContext'
+import en from '../../shared/language/en'
+import ru from '../../shared/language/ru'
 
 import TextInput from '../Inputs/TextInput/TextInput'
 import ThemeBtn from './components/ThemeBtn/ThemeBtn'
@@ -14,23 +14,31 @@ import ThemeBtn from './components/ThemeBtn/ThemeBtn'
 import './Header.scss'
 
 const Header = ({ type = '' }) => {
-    const { enqueueSnackbar } = useSnackbar()
     const navigate = useNavigate()
     const userInfo = JSON.parse(localStorage.getItem('userInfo'))
+    const [admin, setAdmin] = useAdmin()
     const [setCreateCollectionShow] = useCreateCollectionShow(true)
     const [setAddItemShow] = useAddItemShow(true)
     const [setEditProfileShow] = useEditProfileShow(true)
     const [mainPageSearch, setMainPageSearch] = useMainPageSearch()
+    const [menuShow, setMenuShow] = useState(false)
+    const [lang, setLang] = useLang()
 
-    const logout = async () => {
-        const res = await logoutUserApi()
-        if (!res.success) {
-            enqueueSnackbar('Something went wrong, please try again', { variant: 'error' })
-        } else if (res.success) {
-            localStorage.removeItem('token')
-            localStorage.removeItem('userInfo')
-            navigate('/')
+    const logout = () => {
+        setAdmin(false)
+        setMainPageSearch('')
+        localStorage.removeItem('token')
+        localStorage.removeItem('userInfo')
+        navigate(LOGIN_URL)
+    }
+
+    const chooseLang = (language) => {
+        if (language === 'en') {
+            setLang(en)
+        } else if (language === 'ru') {
+            setLang(ru)
         }
+        localStorage.setItem('language', language)
     }
 
     return (
@@ -38,25 +46,36 @@ const Header = ({ type = '' }) => {
             <div className='header-logo'>
                 <Typography variant='h3' component='h3'><Link to={MAIN_URL} className='text-primary'>LOGO</Link></Typography>
             </div>
-            <div className="header-search w-50">
-                <TextInput label='Search...' value={mainPageSearch} setValue={(e) => setMainPageSearch(e.target.value)} />
-            </div>
-            <div className='header-btnBox d-flex align-items-center justify-content-center'>
-                <ThemeBtn />
+            <Button variant='contained' className='menuBtn' onClick={() => setMenuShow(true)}>{lang.header.menu}</Button>
+            {
+                type === 'mainPage' && <div className="header-search">
+                    <TextInput label={lang.header.search} value={mainPageSearch} setValue={(e) => setMainPageSearch(e.target.value)} />
+                </div>
+            }
+            <div className={`header-btnBox d-flex align-items-center justify-content-center bg-white ${menuShow ? 'show' : ''}`}>
+                <div className='d-flex align-items-center'>
+                    <button className='btn shadow-none border-end text-black rounded-0' onClick={() => chooseLang('en')}>{lang.header.en}</button>
+                    <button className='btn shadow-none text-black' onClick={() => chooseLang('ru')}>{lang.header.ru}</button>
+                    <ThemeBtn />
+                </div>
                 {
-                    type === 'user' && <Button variant='contained' onClick={() => setCreateCollectionShow(true)}><Add /> Create collection</Button>
+                    type === 'profilePage' || type === 'admin' ? <Button variant='contained' className='headerBtn' onClick={() => setCreateCollectionShow(true)}><Add /> <span>{lang.user.createCollection}</span></Button> : ''
                 }
                 {
-                    type === 'user' && <Button variant='contained' className='ms-3' onClick={() => setEditProfileShow(true)}><Edit /> Edit profile</Button>
+                    type === 'profilePage' && <Button variant='contained' className='ms-3 headerBtn' onClick={() => setEditProfileShow(true)}><Edit /> <span>{lang.user.editProfile}</span></Button>
                 }
                 {
-                    type === 'owner' && <Button variant='contained' className='ms-3' onClick={() => setAddItemShow(true)}><Add /> Add item</Button>
+                    type === 'owner' ? <Button variant='contained' className='ms-3 headerBtn' onClick={() => setAddItemShow(true)}><Add /> <span>{lang.collection.addItem}</span></Button> : ''
                 }
-                <div className='header-btnBox-end border-start ms-3'>
+                {
+                    admin && window.location.pathname !== '/admin' && <Button variant='contained' className='ms-3 headerBtn'><Link to='/admin' className='text-white'><People /> <span>{lang.common.users}</span></Link></Button>
+                }
+                <div className='header-btnBox-end d-flex align-items-center border-sm-start ms-3'>
                     {
-                        type !== 'user' && <Link to={`${USER_URL}/${userInfo?.id}`} className='profileBtn ms-3'><img src={userInfo?.img} alt='' className='rounded-circle' /></Link>
+                        userInfo.id !== 'guest' && type !== 'profilePage' && <Link to={`${USER_URL}/${userInfo.id}`} className='profileBtn ms-3 d-block'><img src={userInfo.img} alt='' className='rounded-circle' /></Link>
                     }
                     <Fab color='primary' className='fabBtn ms-3' onClick={logout}><LogoutOutlined /></Fab>
+                    <Button variant='text' className='menuCloseBtn text-silver' onClick={() => setMenuShow(false)}><Close /></Button>
                 </div>
             </div>
         </div>

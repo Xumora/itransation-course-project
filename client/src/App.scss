@@ -14,10 +14,27 @@ body {
       &.night{
         color: white !important;
         .bg-white{
-          background-color: #212529 !important;
+          background-color: #0d1117 !important;
         }
         .bg-light{
           background-color: black !important;
+        }
+        input, textarea,.MuiSelect-select, ::placeholder, .text-black, th, td{
+          color: white !important;
+        }
+        .css-vqmohf-MuiButtonBase-root-MuiRadio-root{
+          color: silver;
+        }
+        .react-datepicker-wrapper{
+          input{background-color: #0d1117;}
+        }
+        .react-datepicker__tab-loop{
+          .react-datepicker__month{background-color: #0d1117;margin: 0;}
+          .react-datepicker__day{color: white;&:hover{color: black;}}
+        }
+        .MuiChip-root{
+          background-color: black;
+          color: white;
         }
       }
     }
@@ -45,6 +62,9 @@ a{
 
 input, textarea{
   outline: none;
+  &::placeholder{
+    color: silver;
+  }
 }
 
 .MuiOutlinedInput-notchedOutline{
@@ -90,9 +110,15 @@ input, textarea{
 }
 
 .page{
-  min-width: 100vw;
+  width: 100vw;
   min-height: 100vh;
+  overflow-x: hidden;
   &-main{
+    &.main{
+      @media only screen and (max-width: 767px) {
+        height: calc(100vh - 122px);
+    }
+    }
     height: calc(100vh - 72px);
     overflow: auto;
     &::-webkit-scrollbar{
@@ -103,5 +129,13 @@ input, textarea{
 
 .rounded{
   border-radius: 6px !important;
+}
+
+input[type='checkbox'] {
+  cursor: pointer;
+}
+
+.row{
+  --bs-gutter-x: 0 !important;
 }
 

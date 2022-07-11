@@ -15,7 +15,7 @@ const SelectOne = ({ types = [], label = '', value = '', setValue = null }) => {
             >
                 {
                     types?.map((v, i) => {
-                        return <MenuItem value={v} key={i}>{v}</MenuItem>
+                        return <MenuItem value={v.type} key={i}>{v.name}</MenuItem>
                     })
                 }
             </Select>

@@ -8,7 +8,6 @@ const collectionModel = new Schema({
     itemFields: { type: Array, default: [] },
     comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
     likes: { type: Array, default: [] },
-    viewed: { type: Number, default: 0 },
     items: [{ type: Schema.Types.ObjectId, ref: 'Item' }],
     itemsCount: { type: Number, default: 0 }
 }, {

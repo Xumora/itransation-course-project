@@ -1,0 +1,22 @@
+.mainPageNavbar{
+    height: 66px;
+    @media only screen and (max-width: 575px) {
+       flex-wrap: wrap;
+       height: auto;
+    }
+    .btnBox{
+        @media only screen and (max-width: 575px) {
+            width: 100%;
+            button{
+                margin: 0 !important;
+                width: 50%;
+            }
+        }
+    }
+    .select{
+        @media only screen and (max-width: 575px) {
+            margin-top: 16px;
+            width: 100% !important;
+        }
+    }
+}

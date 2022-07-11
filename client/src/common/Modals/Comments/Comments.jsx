@@ -31,6 +31,17 @@ const Comments = ({ setCommentsShow = null, name = '', id = null, type = '' }) =
         getComments()
     }, [id, type])
 
+    useEffect(() => {
+        const interval = setInterval(async () => {
+            const res = await getCommentsApi(id, type)
+            if (res.success) {
+                setComments(res.data)
+            }
+        }, 2000);
+
+        return () => clearInterval(interval);
+    }, [id, type]);
+
     const send = async () => {
         if (content === '') {
             enqueueSnackbar(lang.snackbars.commentEmpty, { variant: 'error' })

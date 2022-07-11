@@ -19,11 +19,13 @@ export const GET_COLLECTION_INFO_URL = 'https://itransation-course-project.herok
 export const COLLECTION_LIKE = 'https://itransation-course-project.herokuapp.com/api/collection/like'
 export const EDIT_COLLECTION = 'https://itransation-course-project.herokuapp.com/api/collection/edit'
 export const GET_COLLECTIONS = 'https://itransation-course-project.herokuapp.com/api/collection/search'
+export const DELETE_COLLECTION = 'https://itransation-course-project.herokuapp.com/api/collection/delete'
 
 export const CREATE_ITEM_URL = 'https://itransation-course-project.herokuapp.com/api/item/create'
 export const ITEM_LIKE = 'https://itransation-course-project.herokuapp.com/api/item/like'
 export const EDIT_ITEM = 'https://itransation-course-project.herokuapp.com/api/item/edit'
 export const GET_ITEMS = 'https://itransation-course-project.herokuapp.com/api/item/search'
+export const DELETE_ITEM = 'https://itransation-course-project.herokuapp.com/api/item/delete'
 
 export const ADD_COMMENT = 'https://itransation-course-project.herokuapp.com/api/comment/add'
 export const GET_COMMENTS = 'https://itransation-course-project.herokuapp.com/api/comment/get'

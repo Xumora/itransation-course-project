@@ -16,15 +16,18 @@ const Collection = () => {
     const [collectionData, setCollectionData] = useState(null)
     const [items, setItems] = useState([])
     const [admin] = useAdmin()
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         const getCollectionInfo = async () => {
+            setLoading(true)
             let res = await getCollectionInfoApi(collectionId)
             if (res.success) {
                 setItems(res.data.items)
                 delete res.data.items
                 setCollectionData(res.data)
             }
+            setLoading(false)
         }
         getCollectionInfo()
     }, [collectionId])
@@ -39,7 +42,7 @@ const Collection = () => {
             }
             <div className='page-main bg-light'>
                 <CollectionInfo user={collectionData?.user} name={collectionData?.name} itemsCount={collectionData?.itemsCount} />
-                <RenderItems items={items} type='collectionInner' isOwner={userInfo.id === collectionData?.user?._id ? true : false} setItems={setItems} />
+                <RenderItems loading={loading} items={items} type='collectionInner' isOwner={userInfo.id === collectionData?.user?._id || admin ? true : false} setItems={setItems} />
             </div>
         </div>
     )

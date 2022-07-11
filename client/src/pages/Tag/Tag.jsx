@@ -22,15 +22,18 @@ const Tag = () => {
     const [isFollowed, setIsFollowed] = useState(false)
     const [setAdmin] = useAdmin(true)
     const [setMainPageSearch] = useMainPageSearch(true)
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         const getTagInfo = async () => {
+            setLoading(true)
             const res = await getTagInfoApi(tagName)
             if (res.success) {
                 setTagData(res.data.tag)
                 setItems(res.data.items)
                 setIsFollowed(res.data.isFollowed)
             }
+            setLoading(false)
         }
         getTagInfo()
     }, [tagName])
@@ -74,7 +77,7 @@ const Tag = () => {
                         }
                     </div>
                 </div>
-                <RenderItems items={items} isOwner={false} />
+                <RenderItems loading={loading} items={items} isOwner={false} />
             </div>
         </div>
     )

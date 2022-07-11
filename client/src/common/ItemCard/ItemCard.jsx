@@ -3,10 +3,10 @@ import { useSnackbar } from 'notistack'
 import { Link, useNavigate } from 'react-router-dom'
 import moment from 'moment'
 import { Button, Typography } from '@mui/material'
-import { FavoriteBorder, ModeCommentOutlined, Favorite, EditOutlined } from '@mui/icons-material'
+import { FavoriteBorder, ModeCommentOutlined, Favorite, EditOutlined, DeleteOutlined } from '@mui/icons-material'
 import { useLang } from '../../contexts/UIContext'
 import { COLLECTION_URL, LOGIN_URL, TAG_PAGE, USER_URL } from '../../shared/url/routerUrl'
-import { itemLikeApi } from '../../shared/api/api'
+import { deleteItemApi, itemLikeApi, getCollectionInfoApi } from '../../shared/api/api'
 import { useAdmin, useMainPageSearch } from '../../contexts/DataContext'
 
 import Comments from '../Modals/Comments/Comments'
@@ -21,7 +21,7 @@ const ItemCard = ({ item = null, type = '', isOwner, setItems }) => {
   const [commentsShow, setCommentsShow] = useState(false)
   const [editItemShow, setEditItemShow] = useState(false)
   const [lang] = useLang()
-  const [admin, setAdmin] = useAdmin()
+  const [setAdmin] = useAdmin()
   const [setMainPageSearch] = useMainPageSearch(true)
   const [likes, setLikes] = useState([...item?.likes])
 
@@ -52,13 +52,24 @@ const ItemCard = ({ item = null, type = '', isOwner, setItems }) => {
     }
   }
 
+  const deleteItem = async (collectionId) => {
+    const res = await deleteItemApi(item?._id)
+    if (res.success) {
+      enqueueSnackbar(lang.snackbars.itemDeleted, { variant: 'success' })
+      const newItems = await getCollectionInfoApi(collectionId)
+      if (newItems.success) {
+        setItems(newItems.data.items)
+      }
+    }
+  }
+
   return (
     <div className='itemCard bg-white overflow-hidden border'>
       {
         commentsShow && <Comments setCommentsShow={setCommentsShow} name={item?.name} id={item?._id} type='item' />
       }
       {
-        (admin || isOwner) && editItemShow ? <AddItem setItems={setItems} edit setClose={setEditItemShow} id={item?._id} editName={item?.name} editImg={item?.img} editFields={item?.additionalFields} editTags={item?.tags} /> : ''
+        isOwner && editItemShow ? <AddItem setItems={setItems} edit setClose={setEditItemShow} id={item?._id} editName={item?.name} editImg={item?.img} editFields={item?.additionalFields} editTags={item?.tags} /> : ''
       }
       {
         type !== 'collectionInner' ? <div className='px-3 pt-1'>
@@ -98,7 +109,10 @@ const ItemCard = ({ item = null, type = '', isOwner, setItems }) => {
           </Button>
           <Button variant='text' className='text-silver p-0 rounded-circle actionBtn' onClick={() => setCommentsShow(true)}><ModeCommentOutlined /></Button>
           {
-            admin || isOwner ? <Button variant='text' className='rounded-circle actionBtn p-0 text-silver mx-2 float-end' onClick={() => setEditItemShow(true)}><EditOutlined /></Button> : ''
+            isOwner && <>
+              <Button variant='text' className='rounded-circle actionBtn p-0 text-silver mx-2 float-end' onClick={() => setEditItemShow(true)}><EditOutlined /></Button>
+              <Button variant='text' className='rounded-circle actionBtn p-0 text-silver mx-2 float-end' onClick={() => deleteItem(item?.collectionId?._id)}><DeleteOutlined /></Button>
+            </>
           }
         </div>
         <div className="itemCard-bottom-text px-2 text-silver">

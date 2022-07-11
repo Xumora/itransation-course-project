@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useSnackbar } from 'notistack'
 import { Link, useNavigate } from 'react-router-dom'
 import { LockOutlined, LockOpenOutlined, DeleteOutlined } from '@mui/icons-material';
-import { Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Button } from '@mui/material'
+import { Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Button, Skeleton } from '@mui/material'
 import { useLang } from '../../../../contexts/UIContext'
 import { getUsersApi, blockUsersApi, deleteUsersApi, changeRoleApi } from '../../../../shared/api/api'
 import { LOGIN_URL, USER_URL } from '../../../../shared/url/routerUrl'
@@ -19,13 +19,16 @@ const UsersTable = () => {
     const [selectedUsers, setSelectedUsers] = useState([])
     const [setMainPageSearch] = useMainPageSearch(true)
     const [setAdmin] = useAdmin(true)
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         const getUsers = async () => {
+            setLoading(true)
             const res = await getUsersApi('')
             if (res.success) {
                 setUsers(res.data)
             }
+            setLoading(false)
         }
         getUsers()
     }, [])
@@ -53,6 +56,7 @@ const UsersTable = () => {
     }
 
     const blockUsers = async (block) => {
+        setLoading(true)
         const res = await blockUsersApi(selectedUsers, block)
         if (res.success) {
             const users = await getUsersApi('')
@@ -71,9 +75,11 @@ const UsersTable = () => {
                 enqueueSnackbar(lang.snackbars.smthWentWrong, { variant: 'error' })
             }
         }
+        setLoading(false)
     }
 
     const changeRole = async (admin) => {
+        setLoading(true)
         const res = await changeRoleApi(selectedUsers, admin)
         if (res.success) {
             const users = await getUsersApi('')
@@ -92,9 +98,11 @@ const UsersTable = () => {
                 enqueueSnackbar(lang.snackbars.smthWentWrong, { variant: 'error' })
             }
         }
+        setLoading(false)
     }
 
     const deleteUsers = async () => {
+        setLoading(true)
         const res = await deleteUsersApi(selectedUsers)
         if (res.success) {
             const users = await getUsersApi('')
@@ -113,6 +121,7 @@ const UsersTable = () => {
                 enqueueSnackbar(lang.snackbars.smthWentWrong, { variant: 'error' })
             }
         }
+        setLoading(false)
     }
 
     return (
@@ -141,7 +150,20 @@ const UsersTable = () => {
                     </TableHead>
                     <TableBody>
                         {
-                            users.map((v, i) => (
+                            loading ? <>
+                                <TableRow>
+                                    <TableCell colSpan={6}><Skeleton animation='wave' width='100%' height='40px' /></TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell colSpan={6}><Skeleton animation='wave' width='100%' height='40px' /></TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell colSpan={6}><Skeleton animation='wave' width='100%' height='40px' /></TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell colSpan={6}><Skeleton animation='wave' width='100%' height='40px' /></TableCell>
+                                </TableRow>
+                            </> : users.map((v, i) => (
                                 <TableRow key={v._id}>
                                     <TableCell>
                                         <input className="form-check-input" type="checkbox" id={v._id} onChange={addSelectedUser} checked={selectedUsers.includes(v._id)} />

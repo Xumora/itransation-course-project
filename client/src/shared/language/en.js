@@ -36,7 +36,9 @@ const en = {
         userExists: 'User with such an email exists',
         tagUnfollowed: 'Tag is unfollowed',
         tagFollowed: 'Tag is followed',
-        registerFirst: 'You need to register first'
+        registerFirst: 'You need to register first',
+        itemDeleted: 'Item is deleted',
+        collectionDeleted: 'Collection is deleted'
     },
     auth: {
         login: {

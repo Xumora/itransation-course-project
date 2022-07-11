@@ -36,7 +36,9 @@ const ru = {
         userExists: 'Пользователь с таким адресом электронной почты существует',
         tagUnfollowed: 'Вы подписались на тег',
         tagFollowed: 'Вы отписались от тега',
-        registerFirst: 'Вам сначала нужно зарегистрироваться'
+        registerFirst: 'Вам сначала нужно зарегистрироваться',
+        itemDeleted: 'Предмет удален',
+        collectionDeleted: 'Коллекция удалена'
     },
     auth: {
         login: {

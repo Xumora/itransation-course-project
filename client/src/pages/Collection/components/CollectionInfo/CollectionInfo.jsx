@@ -11,7 +11,7 @@ const CollectionInfo = ({ name = '', itemsCount = '', user = null }) => {
         <div className='p-3'>
             <div className='bg-white p-3 rounded'>
                 <Link to={`${USER_URL}/${user?._id}`} className='fw-bolder text-black d-inline-block mb-3'>
-                    <img src={user?.img?.url} alt='' className='rounded-circle me-2' width={45} height={45} style={{ objectFit: 'cover' }} />
+                    <img src={user ? user?.img?.url : 'https://res.cloudinary.com/xumora/image/upload/v1655992787/test/recp6hkjjvvkopjwqcy7.png'} alt='' className='rounded-circle me-2' width={45} height={45} style={{ objectFit: 'cover' }} />
                     {user?.username}
                 </Link>
                 <Typography variant='body1' component='p'>{lang.collection.name}: {name}</Typography>

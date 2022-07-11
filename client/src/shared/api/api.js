@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { REGISTER_USER_URL, LOGIN_USER_URL, UPLOAD_CLOUD_IMG_URL, DELETE_CLOUD_IMG_URL, CREATE_COLLECTION_URL, GET_USER_INFO_URL, GET_COLLECTION_INFO_URL, CREATE_ITEM_URL, COLLECTION_LIKE, ITEM_LIKE, ADD_COMMENT, GET_COMMENTS, IS_ADMIN, EDIT_PROFILE, EDIT_COLLECTION, GET_USERS, GET_COLLECTIONS, GET_ITEMS, GET_TAGS, EDIT_ITEM, GET_TAG_INFO, TAG_FOLLOW, BLOCK_USERS, DELETE_USERS, CHANGE_ROLE, GUEST_LOGIN } from '../url/apiUrl';
+import { REGISTER_USER_URL, LOGIN_USER_URL, UPLOAD_CLOUD_IMG_URL, DELETE_CLOUD_IMG_URL, CREATE_COLLECTION_URL, GET_USER_INFO_URL, GET_COLLECTION_INFO_URL, CREATE_ITEM_URL, COLLECTION_LIKE, ITEM_LIKE, ADD_COMMENT, GET_COMMENTS, IS_ADMIN, EDIT_PROFILE, EDIT_COLLECTION, GET_USERS, GET_COLLECTIONS, GET_ITEMS, GET_TAGS, EDIT_ITEM, GET_TAG_INFO, TAG_FOLLOW, BLOCK_USERS, DELETE_USERS, CHANGE_ROLE, GUEST_LOGIN, DELETE_ITEM, DELETE_COLLECTION } from '../url/apiUrl';
 
 axios.defaults.withCredentials = true
 
@@ -222,6 +222,20 @@ export const editCollectionApi = async (userId, id, name, description, img, item
     }
 }
 
+export const deleteCollectionApi = async (id) => {
+    try {
+        await axios.post(DELETE_COLLECTION, { id }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+            }
+        })
+        return { success: true }
+    } catch (error) {
+        return { success: false, message: error.response.data }
+    }
+}
+
 
 
 export const createItemApi = async (collectionId, name, img, additionalFields, tags) => {
@@ -261,6 +275,20 @@ export const editItemApi = async (id, name, img, additionalFields, tags) => {
             }
         })
         return { success: true, data: res.data }
+    } catch (error) {
+        return { success: false, message: error.response.data }
+    }
+}
+
+export const deleteItemApi = async (id) => {
+    try {
+        await axios.post(DELETE_ITEM, { id }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+            }
+        })
+        return { success: true }
     } catch (error) {
         return { success: false, message: error.response.data }
     }

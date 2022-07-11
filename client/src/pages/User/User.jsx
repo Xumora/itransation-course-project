@@ -66,13 +66,13 @@ const User = () => {
                         }
                     </div>
                     <div className='userPage-main-left-tags rounded bg-white p-3 mt-3'>
-                        <TagsBox tags={followedTags} />
+                        <TagsBox loading={loading} tags={followedTags} />
                     </div>
                 </div>
                 <div className='userPage-main-right'>
                     <UserImg loading={loading} bgImg={userData?.bgImg?.url} ava={userData?.img?.url} username={userData?.username} />
                     <div className='text-center infoBtn'><Button variant='contained' onClick={() => setInfoShow(true)}>Show additional information</Button></div>
-                    <RenderCollections type={userInfo?.id === userId ? 'owner' : ''} collections={collections} setCollections={setCollections} />
+                    <RenderCollections loading={loading} type={(userInfo?.id === userId || admin) ? 'owner' : ''} collections={collections} setCollections={setCollections} />
                 </div>
             </div>
         </div>

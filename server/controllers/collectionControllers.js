@@ -1,6 +1,15 @@
 const asyncHandler = require('express-async-handler')
 const Collection = require('../models/Collection')
+const Comment = require('../models/Comment')
+const Item = require('../models/Item')
 const User = require('../models/User')
+const cloudinary = require('cloudinary')
+
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.CLOUD_API_KEY,
+    api_secret: process.env.CLOUD_API_SECRET
+})
 
 const createCollection = asyncHandler(async (req, res, next) => {
     const { userId, name, description, img, itemFields } = req.body
@@ -28,9 +37,9 @@ const createCollection = asyncHandler(async (req, res, next) => {
 
 const getCollectionInfo = asyncHandler(async (req, res, next) => {
     const { id } = req.params
-    const collection = await Collection.findById(id).select('user name itemFields items itemsCount')
+    const collection = await Collection.findById(id).select('user collectionId name itemFields items itemsCount')
         .populate({ path: 'user', select: '_id username img' })
-        .populate({ path: 'items', select: '_id name img additionalFields likes tags createdAt', options: { sort: { 'createdAt': -1 } } })
+        .populate({ path: 'items', select: '_id collectionId name img additionalFields likes tags createdAt', populate: { path: 'collectionId', select: '_id name' }, options: { sort: { 'createdAt': -1 } } })
     return res.json(collection)
 })
 
@@ -94,4 +103,21 @@ const getCollections = asyncHandler(async (req, res, next) => {
     return res.json(collections)
 })
 
-module.exports = { createCollection, getCollectionInfo, like, editCollection, getCollections }
+const deleteCollection = asyncHandler(async (req, res, next) => {
+    const { id } = req.body
+    const user = req.user
+    const collection = await Collection.findById(id)
+    if (user.id == collection.user || user.isAdmin) {
+        if (collection.img) {
+            cloudinary.v2.uploader.destroy(collection.img.public_id, async (err, result) => {
+                if (err) throw err
+            })
+        }
+        await Comment.deleteMany({ _id: collection.comments })
+        await Item.deleteMany({ _id: collection.items })
+        await Collection.deleteOne({ _id: id })
+        return res.json('Collection is deleted')
+    }
+})
+
+module.exports = { createCollection, getCollectionInfo, like, editCollection, getCollections, deleteCollection }

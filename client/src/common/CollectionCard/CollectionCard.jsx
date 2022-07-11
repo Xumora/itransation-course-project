@@ -3,10 +3,10 @@ import { useSnackbar } from 'notistack'
 import { Link, useNavigate } from 'react-router-dom'
 import moment from 'moment'
 import { Button, Typography } from '@mui/material'
-import { FavoriteBorder, ModeCommentOutlined, Favorite, EditOutlined } from '@mui/icons-material'
+import { FavoriteBorder, ModeCommentOutlined, Favorite, EditOutlined, DeleteOutlined } from '@mui/icons-material'
 import { COLLECTION_URL, LOGIN_URL, USER_URL } from '../../shared/url/routerUrl'
 import MDEditor from '@uiw/react-md-editor';
-import { collectionLikeApi } from '../../shared/api/api'
+import { collectionLikeApi, getUserInfoApi, deleteCollectionApi } from '../../shared/api/api'
 import { useLang } from '../../contexts/UIContext'
 import { useAdmin, useMainPageSearch } from '../../contexts/DataContext'
 
@@ -22,7 +22,7 @@ const CollectionCard = ({ type = '', collection = null, setCollections }) => {
     const [commentsShow, setCommentsShow] = useState(false)
     const [editCollectionShow, setEditCollectionShow] = useState(false)
     const [lang] = useLang()
-    const [admin, setAdmin] = useAdmin()
+    const [setAdmin] = useAdmin()
     const [setMainPageSearch] = useMainPageSearch(true)
     const [likes, setLikes] = useState([...collection?.likes])
 
@@ -53,13 +53,24 @@ const CollectionCard = ({ type = '', collection = null, setCollections }) => {
         }
     }
 
+    const deleteCollection = async () => {
+        const res = await deleteCollectionApi(collection._id)
+        if (res.success) {
+            enqueueSnackbar(lang.snackbars.collectionDeleted, { variant: 'success' })
+            const newCollections = await getUserInfoApi(collection.user._id)
+            if (newCollections.success) {
+                setCollections(newCollections.data.collections)
+            }
+        }
+    }
+
     return (
         <div className='collectionCard border bg-white overflow-hidden'>
             {
                 commentsShow ? <Comments setCommentsShow={setCommentsShow} name={collection?.name} id={collection?._id} type='collection' /> : ''
             }
             {
-                (admin || type === 'owner') && editCollectionShow ? <AddCollection setCollections={setCollections} id={collection?._id} edit setClose={setEditCollectionShow} editName={collection?.name} editImage={collection?.img} editDescription={collection?.description} editItemFields={collection?.itemFields} /> : ''
+                type === 'owner' && editCollectionShow ? <AddCollection setCollections={setCollections} id={collection?._id} edit setClose={setEditCollectionShow} editName={collection?.name} editImage={collection?.img} editDescription={collection?.description} editItemFields={collection?.itemFields} /> : ''
             }
             {
                 type === 'mainPage' ? <Link to={`${USER_URL}/${collection?.user?._id}`} className='d-flex align-items-center collectionCard-top border-bottom pt-1 px-3'>
@@ -84,7 +95,10 @@ const CollectionCard = ({ type = '', collection = null, setCollections }) => {
                     </Button>
                     <Button variant='text' className='rounded-circle actionBtn p-0 text-silver mx-2' onClick={() => setCommentsShow(true)}><ModeCommentOutlined /></Button>
                     {
-                        type === 'owner' || admin ? <Button variant='text' className='rounded-circle actionBtn p-0 text-silver mx-2 float-end' onClick={() => setEditCollectionShow(true)}><EditOutlined /></Button> : ''
+                        type === 'owner' && <>
+                            <Button variant='text' className='rounded-circle actionBtn p-0 text-silver mx-2 float-end' onClick={() => setEditCollectionShow(true)}><EditOutlined /></Button>
+                            <Button variant='text' className='rounded-circle actionBtn p-0 text-silver mx-2 float-end' onClick={deleteCollection}><DeleteOutlined /></Button>
+                        </>
                     }
                 </div>
                 <div className="collectionCard-bottom-text px-2 text-silver">

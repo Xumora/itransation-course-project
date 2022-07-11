@@ -2,6 +2,15 @@ const asyncHandler = require('express-async-handler')
 const Collection = require('../models/Collection')
 const Item = require('../models/Item')
 const Tag = require('../models/Tag')
+const Comment = require('../models/Comment')
+const cloudinary = require('cloudinary')
+
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.CLOUD_API_KEY,
+    api_secret: process.env.CLOUD_API_SECRET
+})
+
 
 const createItem = asyncHandler(async (req, res, next) => {
     const { collectionId, name, img, additionalFields, tags } = req.body
@@ -82,5 +91,20 @@ const getItems = asyncHandler(async (req, res, next) => {
     return res.json(items)
 })
 
+const deleteItem = asyncHandler(async (req, res, next) => {
+    const { id } = req.body
+    const user = req.user
+    const item = await Item.findById(id)
+    if (user.id == item.user || user.isAdmin) {
+        if (item.img) {
+            cloudinary.v2.uploader.destroy(item.img.public_id, async (err, result) => {
+                if (err) throw err
+            })
+        }
+        await Comment.deleteMany({ _id: item.comments })
+        await Item.deleteOne({ _id: id })
+        return res.json('Item is deleted')
+    }
+})
 
-module.exports = { createItem, like, editItem, getItems }
+module.exports = { createItem, like, editItem, getItems, deleteItem }

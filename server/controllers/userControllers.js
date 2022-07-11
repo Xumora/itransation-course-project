@@ -3,16 +3,23 @@ const bcrypt = require('bcryptjs')
 const uuid = require('uuid')
 const tokenService = require('../service/tokenService')
 const mailService = require('../service/mailService')
+const cloudinary = require('cloudinary')
 
 const User = require('../models/User')
 const Comment = require('../models/Comment')
 const Collection = require('../models/Collection')
 const Item = require('../models/Item')
 
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.CLOUD_API_KEY,
+    api_secret: process.env.CLOUD_API_SECRET
+})
+
 const getUserInfo = asyncHandler(async (req, res, next) => {
     const { id } = req.params
     const user = await User.findById(id).select('_id username email img bgImg followedTags collections bio website')
-        .populate({ path: 'collections', select: '-user -comments -items -updatedAt', options: { sort: { 'createdAt': -1 } } })
+        .populate({ path: 'collections', select: '-comments -items -updatedAt', populate: { path: 'user', select: '_id' }, options: { sort: { 'createdAt': -1 } } })
     if (!user) {
         return res.status(400).send('There is no such user')
     }
@@ -40,9 +47,8 @@ const editProfile = asyncHandler(async (req, res, next) => {
         user.password = hashedPassword
         user.save()
     }
-    const tokens = tokenService.generateTokens({ id: userInfo.id, isAdmin: userInfo.isAdmin, isActivated: user.isActivated })
-    res.cookie('refreshToken', tokens.refreshToken, { maxAge: 2592000 * 1000, httpOnly: true })
-    return res.json({ user, token: tokens.accessToken })
+    const token = tokenService.generateToken({ id: userInfo.id, isAdmin: userInfo.isAdmin, isActivated: user.isActivated })
+    return res.json({ user, token })
 })
 
 const isAdmin = asyncHandler(async (req, res, next) => {
@@ -104,6 +110,12 @@ const deleteUsers = asyncHandler(async (req, res, next) => {
     }
     const dbUsers = await User.find({ _id: users })
     dbUsers.map(async v => {
+        cloudinary.v2.uploader.destroy(v.img.public_id, async (err, result) => {
+            if (err) throw err
+        })
+        cloudinary.v2.uploader.destroy(v.bgImg.public_id, async (err, result) => {
+            if (err) throw err
+        })
         await Collection.deleteMany({ user: v._id })
         await Comment.deleteMany({ user: v._id })
         await Item.deleteMany({ user: v._id })
